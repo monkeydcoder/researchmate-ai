@@ -2,6 +2,14 @@
 
 🚀 A privacy-focused, locally-run research assistant powered by Ollama & Llama 3.
 
+---
+
+## 🎥 Demo Video
+
+[Watch the walkthrough on Loom](https://www.loom.com/share/f0cf23e5e03546e5875df76d9d26199b?sid=43511f12-3fcf-43cb-bfdd-4964c7713bf9)
+
+---
+
 Summarize papers, extract insights, generate citations, brainstorm research questions, and more—all on your own machine! 🧑‍💻📄🔒
 
 ---

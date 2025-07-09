@@ -1,4 +1,4 @@
-# ResearchMate AI
+TH# ResearchMate AI
 
 A privacy-focused, locally-run research assistant web application that leverages Ollama and Llama 3 to help researchers and students analyze papers, extract insights, generate citations, brainstorm research questions, and more—all on your own machine.
 
