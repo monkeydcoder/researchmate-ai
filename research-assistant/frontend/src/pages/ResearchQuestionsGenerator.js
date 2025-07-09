@@ -1,40 +1,56 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import { generateResearchQuestions } from '../services/api';
 import ReactMarkdown from 'react-markdown';
+import { researchQuestionsActions } from '../store';
 
 export default function ResearchQuestionsGenerator() {
-  const [topic, setTopic] = useState('');
-  const [fieldOfStudy, setFieldOfStudy] = useState('');
-  const [additionalContext, setAdditionalContext] = useState('');
-  const [difficulty, setDifficulty] = useState('medium');
-  const [isLoading, setIsLoading] = useState(false);
-  const [questions, setQuestions] = useState('');
+  const dispatch = useDispatch();
+  const { input, result, loading } = useSelector(state => state.researchQuestions);
+
+  // Local state mirrors Redux, but Redux is source of truth
+  const [topic, setTopic] = useState(input?.topic || '');
+  const [fieldOfStudy, setFieldOfStudy] = useState(input?.fieldOfStudy || '');
+  const [additionalContext, setAdditionalContext] = useState(input?.additionalContext || '');
+  const [difficulty, setDifficulty] = useState(input?.difficulty || 'medium');
   const [error, setError] = useState('');
+
+  // On mount, sync local state with Redux
+  useEffect(() => {
+    if (input) {
+      setTopic(input.topic || '');
+      setFieldOfStudy(input.fieldOfStudy || '');
+      setAdditionalContext(input.additionalContext || '');
+      setDifficulty(input.difficulty || 'medium');
+    }
+  }, [input]);
+
+  // On any change, update Redux
+  useEffect(() => {
+    dispatch(researchQuestionsActions.setInput({ topic, fieldOfStudy, additionalContext, difficulty }));
+  }, [topic, fieldOfStudy, additionalContext, difficulty, dispatch]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    
     if (!topic.trim()) {
       setError('Please enter a research topic');
       return;
     }
-
-    setIsLoading(true);
+    dispatch(researchQuestionsActions.setLoading(true));
     setError('');
-
     try {
       const response = await generateResearchQuestions(
-        topic, 
-        fieldOfStudy, 
-        additionalContext, 
+        topic,
+        fieldOfStudy,
+        additionalContext,
         difficulty
       );
-      setQuestions(response.response || 'No questions generated');
+      dispatch(researchQuestionsActions.setResult(response.response || 'No questions generated'));
     } catch (err) {
       setError('An error occurred while generating research questions. Please try again.');
       console.error(err);
     } finally {
-      setIsLoading(false);
+      dispatch(researchQuestionsActions.setLoading(false));
     }
   };
 
@@ -70,7 +86,6 @@ export default function ResearchQuestionsGenerator() {
                 required
               />
             </div>
-            
             <div>
               <label htmlFor="fieldOfStudy" className="block text-lg font-medium text-gray-200 mb-2">
                 Field of Study
@@ -86,7 +101,6 @@ export default function ResearchQuestionsGenerator() {
                 onChange={(e) => handleInputChange(e, setFieldOfStudy)}
               />
             </div>
-            
             <div>
               <label htmlFor="additionalContext" className="block text-lg font-medium text-gray-200 mb-2">
                 Additional Context (optional)
@@ -102,7 +116,6 @@ export default function ResearchQuestionsGenerator() {
                 onChange={(e) => handleInputChange(e, setAdditionalContext)}
               ></textarea>
             </div>
-            
             <div>
               <label className="block text-lg font-medium text-gray-200 mb-3">
                 Question Difficulty Level
@@ -155,21 +168,19 @@ export default function ResearchQuestionsGenerator() {
               </div>
             </div>
           </div>
-
           {error && (
             <div className="mt-6 p-4 bg-red-900 text-red-200 rounded-md text-lg animate-pulse-slow">
               {error}
             </div>
           )}
-
           <button
             type="submit"
-            disabled={isLoading}
+            disabled={loading}
             className={`mt-8 btn btn-primary w-full py-4 px-5 group ${
-              isLoading ? 'opacity-70 cursor-not-allowed' : ''
+              loading ? 'opacity-70 cursor-not-allowed' : ''
             }`}
           >
-            {isLoading ? (
+            {loading ? (
               <span className="flex items-center justify-center">
                 <svg className="animate-spin-slow -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
                   <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
@@ -188,19 +199,17 @@ export default function ResearchQuestionsGenerator() {
           </button>
         </form>
       </div>
-
       {/* Results Section */}
-      {questions && (
+      {result && (
         <div className="card p-8 mb-12 animate-fade-in">
           <h2 className="text-2xl md:text-3xl font-bold mb-8 text-primary-400">Generated Research Questions</h2>
           <div className="slide-up">
             <div className="prose prose-lg max-w-none bg-dark-700 p-6 rounded-lg text-gray-200 shadow-md transition-all duration-300 hover:shadow-glow">
-              <ReactMarkdown>{questions}</ReactMarkdown>
+              <ReactMarkdown>{result}</ReactMarkdown>
             </div>
           </div>
         </div>
       )}
-
       {/* Tips Section */}
       <div className="card p-8 feature-box">
         <h3 className="text-xl font-semibold mb-4 text-primary-400 flex items-center">
