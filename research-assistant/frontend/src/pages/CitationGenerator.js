@@ -18,6 +18,16 @@ export default function CitationGenerator() {
     url: '',
   });
   const [error, setError] = useState('');
+  const [fillMsg, setFillMsg] = useState('');
+
+  const examplePaper = {
+    title: 'Attention Is All You Need',
+    authors: 'Ashish Vaswani, Noam Shazeer, Niki Parmar, Jakob Uszkoreit, Llion Jones, Aidan N. Gomez, Łukasz Kaiser, Illia Polosukhin',
+    journal: 'Advances in Neural Information Processing Systems',
+    year: '2017',
+    doi: '10.48550/arXiv.1706.03762',
+    url: 'https://arxiv.org/abs/1706.03762',
+  };
 
   // Initialize from Redux store
   useEffect(() => {
@@ -38,6 +48,13 @@ export default function CitationGenerator() {
 
   const handleFormatChange = (newFormat) => {
     dispatch(citationGeneratorActions.setFormat(newFormat));
+  };
+
+  const handleFillExample = () => {
+    setPaperDetails(examplePaper);
+    dispatch(citationGeneratorActions.setInput(examplePaper));
+    setFillMsg('Example filled!');
+    setTimeout(() => setFillMsg(''), 1000);
   };
 
   const handleSubmit = async (e) => {
@@ -64,11 +81,23 @@ export default function CitationGenerator() {
 
   return (
     <div className="max-w-6xl mx-auto px-4 py-8 fade-in">
-      <div className="text-center mb-10 slide-up">
-        <h1 className="text-3xl md:text-4xl font-bold mb-5 text-white">Citation Generator</h1>
-        <p className="text-base md:text-lg text-gray-300">
-          Generate properly formatted citations for your research papers in different styles.
-        </p>
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-6">
+        <div className="text-center md:text-left mb-4 md:mb-0">
+          <h1 className="text-3xl md:text-4xl font-bold mb-2 text-white">Citation Generator</h1>
+          <p className="text-base md:text-lg text-gray-300">
+            Generate properly formatted citations for your research papers in different styles.
+          </p>
+        </div>
+        <div className="flex flex-col items-center md:items-end">
+          <button
+            type="button"
+            onClick={handleFillExample}
+            className="px-5 py-2 rounded bg-primary-600 text-white font-semibold text-sm hover:bg-primary-500 transition-colors duration-200 mb-1"
+          >
+            Fill Example
+          </button>
+          {fillMsg && <span className="text-xs text-primary-400">{fillMsg}</span>}
+        </div>
       </div>
 
       <div className="card card-hover-shine p-6 mb-10">

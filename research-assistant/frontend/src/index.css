@@ -5,11 +5,11 @@
 :root {
   --primary-color: #0ea5e9;
   --secondary-color: #6366f1;
-  font-size: 14px;
+  font-size: 16px;
 }
 
 html {
-  font-size: 14px;
+  font-size: 16px;
 }
 
 /* Main background with enhanced dark gradient and pattern */

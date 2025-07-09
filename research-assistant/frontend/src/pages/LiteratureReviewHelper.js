@@ -11,6 +11,25 @@ export default function LiteratureReviewHelper() {
   const [isLoading, setIsLoading] = useState(false);
   const [review, setReview] = useState('');
   const [error, setError] = useState('');
+  const [fillMsg, setFillMsg] = useState('');
+
+  const exampleTopic = 'The impact of artificial intelligence on education';
+  const examplePapers = [
+    {
+      title: 'Artificial Intelligence in Education: Promises and Implications for Teaching and Learning',
+      authors: 'Holmes, B., Bialik, M., Fadel, C.',
+      year: '2019',
+      summary: 'This paper explores the potential of AI to transform education, discussing both opportunities and challenges for teachers and learners.',
+      key_findings: 'AI can personalize learning, automate administrative tasks, and provide new insights, but also raises concerns about equity and teacher roles.'
+    },
+    {
+      title: 'The Role of AI in Personalized Learning',
+      authors: 'Chen, L., Chen, P., Lin, Z.',
+      year: '2020',
+      summary: 'The authors review how AI-driven systems can tailor educational experiences to individual student needs, improving outcomes and engagement.',
+      key_findings: 'Personalized AI systems increase student motivation and achievement, but require careful implementation and data privacy safeguards.'
+    }
+  ];
 
   const handleInputChange = (index, field, value) => {
     const newPaperEntries = [...paperEntries];
@@ -35,6 +54,13 @@ export default function LiteratureReviewHelper() {
     const newPaperEntries = [...paperEntries];
     newPaperEntries.splice(index, 1);
     setPaperEntries(newPaperEntries);
+  };
+
+  const handleFillExample = () => {
+    setResearchTopic(exampleTopic);
+    setPaperEntries(examplePapers);
+    setFillMsg('Example filled!');
+    setTimeout(() => setFillMsg(''), 1000);
   };
 
   const handleSubmit = async (e) => {
@@ -69,11 +95,23 @@ export default function LiteratureReviewHelper() {
 
   return (
     <div className="max-w-6xl mx-auto px-4 py-8 fade-in">
-      <div className="text-center mb-12 slide-up">
-        <h1 className="text-3xl md:text-4xl font-bold mb-6 text-white">Literature Review Helper</h1>
-        <p className="text-xl text-gray-300">
-          Organize and synthesize research papers for your literature review with AI assistance.
-        </p>
+      <div className="flex flex-col md:flex-row md:items-center md:justify-between mb-6">
+        <div className="text-center md:text-left mb-4 md:mb-0">
+          <h1 className="text-3xl md:text-4xl font-bold mb-2 text-white">Literature Review Helper</h1>
+          <p className="text-xl text-gray-300">
+            Organize and synthesize research papers for your literature review with AI assistance.
+          </p>
+        </div>
+        <div className="flex flex-col items-center md:items-end">
+          <button
+            type="button"
+            onClick={handleFillExample}
+            className="px-5 py-2 rounded bg-primary-600 text-white font-semibold text-sm hover:bg-primary-500 transition-colors duration-200 mb-1"
+          >
+            Fill Example
+          </button>
+          {fillMsg && <span className="text-xs text-primary-400">{fillMsg}</span>}
+        </div>
       </div>
 
       <div className="card card-hover-shine p-8 mb-12">
